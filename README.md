@@ -24,8 +24,6 @@ Calculator App.
 <table>
 	<tbody width="100%">
 	<tr>
-			<th>Daily forecast Page</th>	
-			<th>5-days forecast Page</th>
 		</tr>
 		<tr>
 			<td>
