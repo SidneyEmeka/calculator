@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -11,6 +10,7 @@ class Calculator extends StatefulWidget {
 }
 
 class _CalculatorState extends State<Calculator> {
+  RegExp cleanEnds = RegExp(r"([+X%/-])");
   List<dynamic> expression = [];
   List operators = [];
   String joinedExpression = "";
@@ -26,46 +26,97 @@ class _CalculatorState extends State<Calculator> {
   List operandsSubstrings = [];
   List operatorsSubstrings = [];
 
-String disintegrate() {
+  String disintegrate() {
     RegExp decimalNumbersOnly = RegExp(r"([+X%/-])");
     operandsSubstrings = joinedExpression.split(decimalNumbersOnly);
     return operandsSubstrings.join();
-}
-num answer = 0;
-num calculate() {
-  print(joinedExpression);
-  print(operandsSubstrings);
-
-  if(joinedExpression.contains("%")) {
-    double a = double.parse(operandsSubstrings[0]);
-    double b = double.parse(operandsSubstrings[1]);
-    return ((a/b) * 100);
-  }if(joinedExpression.contains("/")) {
-    double a = double.parse(operandsSubstrings[0]);
-    double b = double.parse(operandsSubstrings[1]);
-    return (a/b);
-  }if(joinedExpression.contains("X")) {
-    double a = double.parse(operandsSubstrings[0]);
-    double b = double.parse(operandsSubstrings[1]);
-    return (a*b);
-  }if(joinedExpression.contains("-")) {
-    double a = double.parse(operandsSubstrings[0]);
-    double b = double.parse(operandsSubstrings[1]);
-    return (a-b).toDouble();
-  }if(joinedExpression.contains("+")) {
-    double a = double.parse(operandsSubstrings[0]);
-    double b = double.parse(operandsSubstrings[1]);
-    return a+b;
   }
-  else {return 9999999999;}
-}
 
-Widget myPadding(double val) {
-  return SizedBox(
-    height: val,
-  );
-}
+  num answer = 0;
 
+  num percentage() {
+    //print(joinedExpression);
+    //print(operandsSubstrings);
+    // print(operators);
+    if (operators.contains("%")) {
+      double a = double.parse(operandsSubstrings[0]);
+      return (a / 100);
+    } else {
+      return 0;
+    }
+  }
+
+  num calculate() {
+    // print(joinedExpression);
+    // print(operandsSubstrings);
+    if (joinedExpression.startsWith("-")) {
+      double a = double.parse(operandsSubstrings[1]);
+      double b = double.parse(operandsSubstrings[2]);
+      if (joinedExpression.contains("+")) {
+        return (-a + b);
+      }
+      if (joinedExpression.contains("X")) {
+        return (-a * b);
+      }
+      if (joinedExpression.contains("/")) {
+        return (-a / b);
+      }
+      if (joinedExpression.contains("-")) {
+        return (-a - b);
+      }
+    }
+
+    if (joinedExpression.contains("%")) {
+      double a = double.parse(operandsSubstrings[0]);
+      double b = double.parse(operandsSubstrings[1]);
+      return ((a / b) * 100);
+    }
+    if (joinedExpression.contains("/")) {
+      double a = double.parse(operandsSubstrings[0]);
+      double b = double.parse(operandsSubstrings[1]);
+      return (a / b);
+    }
+    if (joinedExpression.contains("X")) {
+      double a = double.parse(operandsSubstrings[0]);
+      double b = double.parse(operandsSubstrings[1]);
+      return (a * b);
+    }
+    if (joinedExpression.contains("-")) {
+      double a = double.parse(operandsSubstrings[0]);
+      double b = double.parse(operandsSubstrings[1]);
+      return (a - b).toDouble();
+    }
+    if (joinedExpression.contains("+")) {
+      double a = double.parse(operandsSubstrings[0]);
+      double b = double.parse(operandsSubstrings[1]);
+      return a + b;
+    }
+    //if (joinedExpression.isNotEmpty) {
+    // if (joinedExpression.startsWith("-")&&joinedExpression.contains("+")) {
+    //   num a = num.parse(operandsSubstrings[1]);
+    //   num b = num.parse(operandsSubstrings[2]);
+    //   return (-a + b);
+    // }
+    // if (joinedExpression.contains("/")) {
+    //   return (-a / b);
+    // }
+    // if (joinedExpression.contains("X")) {
+    //   return (-a * b);
+    // }
+    // if (joinedExpression.contains("-")) {
+    //   return (-a - b);
+    // }
+    // return 0;}
+    else {
+      return 0;
+    }
+  }
+
+  Widget myPadding(double val) {
+    return SizedBox(
+      height: val,
+    );
+  }
 
   Widget display(String math, String result) {
     return Container(
@@ -76,18 +127,24 @@ Widget myPadding(double val) {
         color: Colors.purple.shade50,
       ),
       width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height / 2.6,
+      height: MediaQuery.of(context).size.height / 3,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Text(
             math,
-            style: const TextStyle(fontSize: 30, color: Colors.black, fontWeight: FontWeight.normal),
+            style: const TextStyle(
+                fontSize: 30,
+                color: Colors.black,
+                fontWeight: FontWeight.normal),
           ),
           Text(
             result,
-            style: TextStyle(fontSize: 40, color: Colors.grey.shade800, fontWeight: FontWeight.normal),
+            style: TextStyle(
+                fontSize: 40,
+                color: Colors.grey.shade800,
+                fontWeight: FontWeight.normal),
           )
         ],
       ),
@@ -95,7 +152,7 @@ Widget myPadding(double val) {
   }
 
   Widget calcButtons(Widget what, Color bg, void Function() tapped) {
-    return GestureDetector(
+    return InkWell(
       onTap: tapped,
       child: SizedBox(
         width: 85,
@@ -112,12 +169,19 @@ Widget myPadding(double val) {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.purple.shade50,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(10),
           child: Column(
             children: [
-              display(joinInputs(expression, operators), answer.toString()),
+              display(
+                  joinInputs(expression, operators),
+                  answer.toString().endsWith(".0")
+                      ? answer.toStringAsFixed(0)
+                      : answer.toString() == "0"
+                          ? "0"
+                          : answer.toDouble().toString()),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -155,6 +219,8 @@ Widget myPadding(double val) {
                     setState(() {
                       expression.add("%");
                       operators.add("%");
+                      disintegrate();
+                      answer = percentage();
                     });
                   }),
                   calcButtons(
@@ -335,7 +401,7 @@ Widget myPadding(double val) {
                       });
                     },
                     child: SizedBox(
-                      width: 180,
+                      width: 170,
                       height: 75,
                       child: Card(
                         color: Colors.purple.shade50,
@@ -360,7 +426,11 @@ Widget myPadding(double val) {
                       ),
                       Colors.purple.shade50, () {
                     setState(() {
-                      expression.add(".");
+                      if (!expression.contains(".")) {
+                        expression.add(".");
+                      } else {
+                        return;
+                      }
                     });
                   }),
                   calcButtons(
@@ -369,14 +439,13 @@ Widget myPadding(double val) {
                         style: TextStyle(
                             fontSize: 20, fontWeight: FontWeight.w500),
                       ),
-                      Colors.purple.shade200,
-                      () {
-                        setState(() {
-                          joinInputs(expression, operators);
-                          disintegrate();
-                         answer = calculate();
-                        });
-                      }),
+                      Colors.purple.shade200, () {
+                    setState(() {
+                      joinInputs(expression, operators);
+                      disintegrate();
+                      answer = calculate();
+                    });
+                  }),
                 ],
               ),
             ],
