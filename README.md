@@ -8,7 +8,7 @@ Calculator App.
 		</tr>
 		<tr>
 			<td>
-			<img src="https://github.com/SidneyEmeka/myfiles/blob/master/calculator/f1.png" alt="Snippet"></img>
+			<img src="https://github.com/SidneyEmeka/myfiles/blob/master/calculator/snippet.gif" alt="Snippet"></img>
 			</td>
 		</tr>
 		<tr>
