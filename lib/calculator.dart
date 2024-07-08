@@ -90,24 +90,7 @@ class _CalculatorState extends State<Calculator> {
       double a = double.parse(operandsSubstrings[0]);
       double b = double.parse(operandsSubstrings[1]);
       return a + b;
-    }
-    //if (joinedExpression.isNotEmpty) {
-    // if (joinedExpression.startsWith("-")&&joinedExpression.contains("+")) {
-    //   num a = num.parse(operandsSubstrings[1]);
-    //   num b = num.parse(operandsSubstrings[2]);
-    //   return (-a + b);
-    // }
-    // if (joinedExpression.contains("/")) {
-    //   return (-a / b);
-    // }
-    // if (joinedExpression.contains("X")) {
-    //   return (-a * b);
-    // }
-    // if (joinedExpression.contains("-")) {
-    //   return (-a - b);
-    // }
-    // return 0;}
-    else {
+    } else {
       return 0;
     }
   }
@@ -124,7 +107,7 @@ class _CalculatorState extends State<Calculator> {
       margin: const EdgeInsets.only(bottom: 20),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        color: Colors.purple.shade50,
+       // color: Colors.purple.shade50,
       ),
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height / 3,
@@ -152,15 +135,20 @@ class _CalculatorState extends State<Calculator> {
   }
 
   Widget calcButtons(Widget what, Color bg, void Function() tapped) {
-    return InkWell(
-      onTap: tapped,
-      child: SizedBox(
-        width: 85,
-        height: 75,
-        child: Card(
-          color: bg,
-          elevation: 10,
-          child: Center(child: what),
+    return Material(
+      color: Colors.purple.shade50,
+      borderRadius: BorderRadius.circular(20),
+      clipBehavior: Clip.hardEdge,
+      child: InkWell(
+        onTap: tapped,
+        child: SizedBox(
+          width: 85,
+          height: 75,
+          child: Card(
+            color: bg,
+            elevation: 10,
+            child: Center(child: what),
+          ),
         ),
       ),
     );
@@ -169,7 +157,7 @@ class _CalculatorState extends State<Calculator> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.purple.shade50,
+backgroundColor: Colors.purple.shade50,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(10),
@@ -231,8 +219,14 @@ class _CalculatorState extends State<Calculator> {
                       ),
                       Colors.purple.shade200, () {
                     setState(() {
-                      expression.add("/");
-                      operators.add("/");
+                      if (expression.contains("+") ||
+                          expression.contains("X") ||
+                          expression.contains("/")) {
+                        return;
+                      } else {
+                        expression.add("/");
+                        operators.add("/");
+                      }
                     });
                   }),
                 ],
@@ -282,8 +276,14 @@ class _CalculatorState extends State<Calculator> {
                       ),
                       Colors.purple.shade200, () {
                     setState(() {
-                      expression.add("X");
-                      operators.add("X");
+                      if (expression.contains("+") ||
+                          expression.contains("X") ||
+                          expression.contains("/")) {
+                        return;
+                      } else {
+                        expression.add("X");
+                        operators.add("X");
+                      }
                     });
                   }),
                 ],
@@ -333,8 +333,14 @@ class _CalculatorState extends State<Calculator> {
                       ),
                       Colors.purple.shade200, () {
                     setState(() {
-                      expression.add("-");
-                      operators.add("-");
+                      if (expression.contains("+") ||
+                          expression.contains("X") ||
+                          expression.contains("/")) {
+                        return;
+                      } else {
+                        expression.add("-");
+                        operators.add("-");
+                      }
                     });
                   }),
                 ],
@@ -384,8 +390,14 @@ class _CalculatorState extends State<Calculator> {
                       ),
                       Colors.purple.shade200, () {
                     setState(() {
-                      expression.add("+");
-                      operators.add("+");
+                      if (expression.contains("+") ||
+                          expression.contains("X") ||
+                          expression.contains("/")) {
+                        return;
+                      } else {
+                        expression.add("+");
+                        operators.add("+");
+                      }
                     });
                   }),
                 ],
