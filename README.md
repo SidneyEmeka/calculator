@@ -1,5 +1,5 @@
-# calculator
-Calculator App.
+# Calculator
+For basic mathematical calculations
 
 <table align="center">
 	<tbody width="100%">
