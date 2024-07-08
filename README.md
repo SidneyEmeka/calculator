@@ -1,10 +1,6 @@
 # calculator
 Calculator App.
 
-## Getting Started
-
-<<<<<<< HEAD
-=======
 <table align="center">
 	<tbody width="100%">
 	<tr>
@@ -45,5 +41,3 @@ Calculator App.
 		</tr>
 	</tbody>
 </table>
-
->>>>>>> c7d9697ee70f17eae9ea957889f08e4006666d0a
