@@ -1,6 +1,8 @@
+import 'package:calculator/viewmodel/calculator_viewmodel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class Calculator extends StatefulWidget {
   const Calculator({super.key});
@@ -10,90 +12,7 @@ class Calculator extends StatefulWidget {
 }
 
 class _CalculatorState extends State<Calculator> {
-  RegExp cleanEnds = RegExp(r"([+X%/-])");
-  List<dynamic> expression = [];
-  List operators = [];
-  String joinedExpression = "";
-  String operator = "";
-
-  String joinInputs(List<dynamic> a, List b) {
-    joinedExpression = a.join();
-    operator = operators.join();
-    return joinedExpression;
-    //return "$joinedExpression : $operator";
-  }
-
-  List operandsSubstrings = [];
-  List operatorsSubstrings = [];
-
-  String disintegrate() {
-    RegExp decimalNumbersOnly = RegExp(r"([+X%/-])");
-    operandsSubstrings = joinedExpression.split(decimalNumbersOnly);
-    return operandsSubstrings.join();
-  }
-
-  num answer = 0;
-
-  num percentage() {
-    //print(joinedExpression);
-    //print(operandsSubstrings);
-    // print(operators);
-    if (operators.contains("%")) {
-      double a = double.parse(operandsSubstrings[0]);
-      return (a / 100);
-    } else {
-      return 0;
-    }
-  }
-
-  num calculate() {
-    // print(joinedExpression);
-    // print(operandsSubstrings);
-    if (joinedExpression.startsWith("-")) {
-      double a = double.parse(operandsSubstrings[1]);
-      double b = double.parse(operandsSubstrings[2]);
-      if (joinedExpression.contains("+")) {
-        return (-a + b);
-      }
-      if (joinedExpression.contains("X")) {
-        return (-a * b);
-      }
-      if (joinedExpression.contains("/")) {
-        return (-a / b);
-      }
-      if (joinedExpression.contains("-")) {
-        return (-a - b);
-      }
-    }
-
-    if (joinedExpression.contains("%")) {
-      double a = double.parse(operandsSubstrings[0]);
-      double b = double.parse(operandsSubstrings[1]);
-      return ((a / b) * 100);
-    }
-    if (joinedExpression.contains("/")) {
-      double a = double.parse(operandsSubstrings[0]);
-      double b = double.parse(operandsSubstrings[1]);
-      return (a / b);
-    }
-    if (joinedExpression.contains("X")) {
-      double a = double.parse(operandsSubstrings[0]);
-      double b = double.parse(operandsSubstrings[1]);
-      return (a * b);
-    }
-    if (joinedExpression.contains("-")) {
-      double a = double.parse(operandsSubstrings[0]);
-      double b = double.parse(operandsSubstrings[1]);
-      return (a - b).toDouble();
-    }
-    if (joinedExpression.contains("+")) {
-      double a = double.parse(operandsSubstrings[0]);
-      double b = double.parse(operandsSubstrings[1]);
-      return a + b;
-    } else {
-      return 0;
-    }
-  }
+  final calcModel = CalculatorViewmodel();
 
   Widget myPadding(double val) {
     return SizedBox(
@@ -107,7 +26,7 @@ class _CalculatorState extends State<Calculator> {
       margin: const EdgeInsets.only(bottom: 20),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-       // color: Colors.purple.shade50,
+        // color: Colors.purple.shade50,
       ),
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height / 3,
@@ -157,313 +76,280 @@ class _CalculatorState extends State<Calculator> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-backgroundColor: Colors.purple.shade50,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: Column(
-            children: [
-              display(
-                  joinInputs(expression, operators),
-                  answer.toString().endsWith(".0")
-                      ? answer.toStringAsFixed(0)
-                      : answer.toString() == "0"
-                          ? "0"
-                          : answer.toDouble().toString()),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  calcButtons(
-                      const Text(
-                        "AC",
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.w400),
-                      ),
-                      Colors.purple.shade200, () {
-                    setState(() {
-                      expression = [];
-                      operators = [];
-                      answer = 0;
-                    });
-                  }),
-                  calcButtons(
-                      const Text(
-                        "+/-",
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.w500),
-                      ),
-                      Colors.purple.shade200, () {
-                    setState(() {
-                      expression.insert(0, "-");
-                    });
-                  }),
-                  calcButtons(
-                      const Text(
-                        "%",
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.w500),
-                      ),
-                      Colors.purple.shade200, () {
-                    setState(() {
-                      expression.add("%");
-                      operators.add("%");
-                      disintegrate();
-                      answer = percentage();
-                    });
-                  }),
-                  calcButtons(
-                      const Text(
-                        "/",
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.w500),
-                      ),
-                      Colors.purple.shade200, () {
-                    setState(() {
-                      if (expression.contains("+") ||
-                          expression.contains("X") ||
-                          expression.contains("/")) {
-                        return;
-                      } else {
-                        expression.add("/");
-                        operators.add("/");
-                      }
-                    });
-                  }),
-                ],
-              ),
-              myPadding(8),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  calcButtons(
-                      const Text(
-                        "7",
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.w500),
-                      ),
-                      Colors.purple.shade50, () {
-                    setState(() {
-                      expression.add(7);
-                    });
-                  }),
-                  calcButtons(
-                      const Text(
-                        "8",
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.w500),
-                      ),
-                      Colors.purple.shade50, () {
-                    setState(() {
-                      expression.add(8);
-                    });
-                  }),
-                  calcButtons(
-                      const Text(
-                        "9",
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.w500),
-                      ),
-                      Colors.purple.shade50, () {
-                    setState(() {
-                      expression.add(9);
-                    });
-                  }),
-                  calcButtons(
-                      const Text(
-                        "X",
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.w500),
-                      ),
-                      Colors.purple.shade200, () {
-                    setState(() {
-                      if (expression.contains("+") ||
-                          expression.contains("X") ||
-                          expression.contains("/")) {
-                        return;
-                      } else {
-                        expression.add("X");
-                        operators.add("X");
-                      }
-                    });
-                  }),
-                ],
-              ),
-              myPadding(8),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  calcButtons(
-                      const Text(
-                        "4",
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.w500),
-                      ),
-                      Colors.purple.shade50, () {
-                    setState(() {
-                      expression.add(4);
-                    });
-                  }),
-                  calcButtons(
-                      const Text(
-                        "5",
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.w500),
-                      ),
-                      Colors.purple.shade50, () {
-                    setState(() {
-                      expression.add(5);
-                    });
-                  }),
-                  calcButtons(
-                      const Text(
-                        "6",
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.w500),
-                      ),
-                      Colors.purple.shade50, () {
-                    setState(() {
-                      expression.add(6);
-                    });
-                  }),
-                  calcButtons(
-                      const Text(
-                        "-",
-                        style: TextStyle(
-                            fontSize: 30, fontWeight: FontWeight.w400),
-                      ),
-                      Colors.purple.shade200, () {
-                    setState(() {
-                      if (expression.contains("+") ||
-                          expression.contains("X") ||
-                          expression.contains("/")) {
-                        return;
-                      } else {
-                        expression.add("-");
-                        operators.add("-");
-                      }
-                    });
-                  }),
-                ],
-              ),
-              myPadding(8),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  calcButtons(
-                      const Text(
-                        "1",
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.w500),
-                      ),
-                      Colors.purple.shade50, () {
-                    setState(() {
-                      expression.add(1);
-                    });
-                  }),
-                  calcButtons(
-                      const Text(
-                        "2",
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.w500),
-                      ),
-                      Colors.purple.shade50, () {
-                    setState(() {
-                      expression.add(2);
-                    });
-                  }),
-                  calcButtons(
-                      const Text(
-                        "3",
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.w500),
-                      ),
-                      Colors.purple.shade50, () {
-                    setState(() {
-                      expression.add(3);
-                    });
-                  }),
-                  calcButtons(
-                      const Text(
-                        "+",
-                        style: TextStyle(
-                            fontSize: 25, fontWeight: FontWeight.w400),
-                      ),
-                      Colors.purple.shade200, () {
-                    setState(() {
-                      if (expression.contains("+") ||
-                          expression.contains("X") ||
-                          expression.contains("/")) {
-                        return;
-                      } else {
-                        expression.add("+");
-                        operators.add("+");
-                      }
-                    });
-                  }),
-                ],
-              ),
-              myPadding(8),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        expression.add(0);
-                      });
-                    },
-                    child: SizedBox(
-                      width: 170,
-                      height: 75,
-                      child: Card(
-                        color: Colors.purple.shade50,
-                        elevation: 10,
-                        child: const Align(
-                            alignment: Alignment.centerLeft,
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 35.0),
-                              child: Text("0",
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w500)),
-                            )),
-                      ),
+      backgroundColor: Colors.purple.shade50,
+      body: ScopedModel<CalculatorViewmodel>(
+          model: calcModel,
+          child: ScopedModelDescendant<CalculatorViewmodel>(
+              builder: (context, child, model) {
+            return SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Column(
+                  children: [
+                    display(
+                        model.joinInputs(model.expression, model.operators),
+                        model.answer.toString().endsWith(".0")
+                            ? model.answer.toStringAsFixed(0)
+                            : model.answer.toString() == "0"
+                                ? "0"
+                                : model.answer.toDouble().toString()),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        calcButtons(
+                            const Text(
+                              "AC",
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.w400),
+                            ),
+                            Colors.purple.shade200, () {
+                          model.expression = [];
+                          model.operators = [];
+                          model.answer = 0;
+                        }),
+                        calcButtons(
+                            const Text(
+                              "+/-",
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.w500),
+                            ),
+                            Colors.purple.shade200, () {
+                          model.expression.insert(0, "-");
+                        }),
+                        calcButtons(
+                            const Text(
+                              "%",
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.w500),
+                            ),
+                            Colors.purple.shade200, () {
+                          model.expression.add("%");
+                          model.operators.add("%");
+                          model.disintegrate();
+                          model.answer = model.percentage();
+                        }),
+                        calcButtons(
+                            const Text(
+                              "/",
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.w500),
+                            ),
+                            Colors.purple.shade200, () {
+                          if (model.expression.contains("+") ||
+                              model.expression.contains("X") ||
+                              model.expression.contains("/")) {
+                            return;
+                          } else {
+                            model.expression.add("/");
+                            model.operators.add("/");
+                          }
+                        }),
+                      ],
                     ),
-                  ),
-                  calcButtons(
-                      const Text(
-                        ".",
-                        style: TextStyle(
-                            fontSize: 25, fontWeight: FontWeight.w600),
-                      ),
-                      Colors.purple.shade50, () {
-                    setState(() {
-                      if (!expression.contains(".")) {
-                        expression.add(".");
-                      } else {
-                        return;
-                      }
-                    });
-                  }),
-                  calcButtons(
-                      const Text(
-                        "=",
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.w500),
-                      ),
-                      Colors.purple.shade200, () {
-                    setState(() {
-                      joinInputs(expression, operators);
-                      disintegrate();
-                      answer = calculate();
-                    });
-                  }),
-                ],
+                    myPadding(8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        calcButtons(
+                            const Text(
+                              "7",
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.w500),
+                            ),
+                            Colors.purple.shade50, () {
+                          model.expression.add(7);
+                        }),
+                        calcButtons(
+                            const Text(
+                              "8",
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.w500),
+                            ),
+                            Colors.purple.shade50, () {
+                          model.expression.add(8);
+                        }),
+                        calcButtons(
+                            const Text(
+                              "9",
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.w500),
+                            ),
+                            Colors.purple.shade50, () {
+                          model.expression.add(9);
+                        }),
+                        calcButtons(
+                            const Text(
+                              "X",
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.w500),
+                            ),
+                            Colors.purple.shade200, () {
+                          if (model.expression.contains("+") ||
+                              model.expression.contains("X") ||
+                              model.expression.contains("/")) {
+                            return;
+                          } else {
+                            model.expression.add("X");
+                            model.operators.add("X");
+                          }
+                        }),
+                      ],
+                    ),
+                    myPadding(8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        calcButtons(
+                            const Text(
+                              "4",
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.w500),
+                            ),
+                            Colors.purple.shade50, () {
+                          model.expression.add(4);
+                        }),
+                        calcButtons(
+                            const Text(
+                              "5",
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.w500),
+                            ),
+                            Colors.purple.shade50, () {
+                          model.expression.add(5);
+                        }),
+                        calcButtons(
+                            const Text(
+                              "6",
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.w500),
+                            ),
+                            Colors.purple.shade50, () {
+                          model.expression.add(6);
+                        }),
+                        calcButtons(
+                            const Text(
+                              "-",
+                              style: TextStyle(
+                                  fontSize: 30, fontWeight: FontWeight.w400),
+                            ),
+                            Colors.purple.shade200, () {
+                          if (model.expression.contains("+") ||
+                              model.expression.contains("X") ||
+                              model.expression.contains("/")) {
+                            return;
+                          } else {
+                            model.expression.add("-");
+                            model.operators.add("-");
+                          }
+                        }),
+                      ],
+                    ),
+                    myPadding(8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        calcButtons(
+                            const Text(
+                              "1",
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.w500),
+                            ),
+                            Colors.purple.shade50, () {
+                          model.expression.add(1);
+                        }),
+                        calcButtons(
+                            const Text(
+                              "2",
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.w500),
+                            ),
+                            Colors.purple.shade50, () {
+                          model.expression.add(2);
+                        }),
+                        calcButtons(
+                            const Text(
+                              "3",
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.w500),
+                            ),
+                            Colors.purple.shade50, () {
+                          model.expression.add(3);
+                        }),
+                        calcButtons(
+                            const Text(
+                              "+",
+                              style: TextStyle(
+                                  fontSize: 25, fontWeight: FontWeight.w400),
+                            ),
+                            Colors.purple.shade200, () {
+                          if (model.expression.contains("+") ||
+                              model.expression.contains("X") ||
+                              model.expression.contains("/")) {
+                            return;
+                          } else {
+                            model.expression.add("+");
+                            model.operators.add("+");
+                          }
+                        }),
+                      ],
+                    ),
+                    myPadding(8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            model.expression.add(0);
+                          },
+                          child: SizedBox(
+                            width: 170,
+                            height: 75,
+                            child: Card(
+                              color: Colors.purple.shade50,
+                              elevation: 10,
+                              child: const Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Padding(
+                                    padding: EdgeInsets.only(left: 35.0),
+                                    child: Text("0",
+                                        style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w500)),
+                                  )),
+                            ),
+                          ),
+                        ),
+                        calcButtons(
+                            const Text(
+                              ".",
+                              style: TextStyle(
+                                  fontSize: 25, fontWeight: FontWeight.w600),
+                            ),
+                            Colors.purple.shade50, () {
+                          if (!model.expression.contains(".")) {
+                            model.expression.add(".");
+                          } else {
+                            return;
+                          }
+                        }),
+                        calcButtons(
+                            const Text(
+                              "=",
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.w500),
+                            ),
+                            Colors.purple.shade200, () {
+                          model.joinInputs(model.expression, model.operators);
+                          model.disintegrate();
+                          model.answer = model.calculate();
+                        }),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ],
-          ),
-        ),
-      ),
+            );
+          })),
     );
   }
 }
