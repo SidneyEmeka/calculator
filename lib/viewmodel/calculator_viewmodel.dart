@@ -1,6 +1,6 @@
 import 'package:scoped_model/scoped_model.dart';
 
-class CalculatorViewmodel extends Model{
+class CalculatorViewmodel extends Model {
   RegExp cleanEnds = RegExp(r"([+X%/-])");
   List<dynamic> expression = [];
   List operators = [];
