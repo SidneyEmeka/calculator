@@ -13,7 +13,7 @@ For basic mathematical calculations
 		</tr>
 		<tr>
 			<td>
-				🔗 <a href="https://twitter.com/siswipe">Tweet</a>
+				🔗 <a href="https://x.com/sidswipe/status/1816908947850428727?s=46">Tweet</a>
 			</td>
 		</tr>
 	</tbody>
@@ -33,10 +33,10 @@ For basic mathematical calculations
 		</tr>
 		<tr>
 			<td>
-				🔗 <a href="https://twitter.com/siswipe">Tweet</a>
+				🔗 <a href="https://x.com/sidswipe/status/1816908947850428727?s=46">Tweet</a>
 			</td>
 			<td>
-				🔗 <a href="https://x.com/sidswipe">Tweet</a>
+				🔗 <a href="https://x.com/sidswipe/status/1816908947850428727?s=46">Tweet</a>
 			</td>
 		</tr>
 	</tbody>
